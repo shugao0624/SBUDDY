@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block main %} 
+<div style="margin: 3rem auto; float: none; width: 65rem; text-align: center;">
+    <form action="/forum/" method='POST'>
+        <div style='display: flex; align-items: center;'>
+            <input class = 'form-control' style='flex: 1; margin-right: 10px;' type="text" placeholder="Ask a question" id="question" name='question'>
+            <input class = 'btn' type="submit" value='Submit'>
+        </div>
+    </form>     
+    {% for question in questions %}
+        <div class='accordion'>
+            <div id="question_query"  style="cursor: pointer; text-align: start; display: flex; align-items: center;">
+                <button class="btn questbtn" type="button" data-toggle="collapse" data-target="#answer_content-{{loop.index0}}" 
+                    aria-expanded="true" aria-controls="answer_content-{{loop.index0}}" style='flex: 1'>
+                        {{ question.query }}    
+                        <i class="fas fa-angle-down rotate-icon"></i>
+                    </button>    
+                    {% if question.answers|length > 0 %}
+                    <div style="font-size: small; color: blue; font-style: italic; margin-left: 10px; width: 200px; display: inline-block;">
+                        {% if question.answers|length == 1 %}
+                        <span id = 'ans-c'>1 answer</span>
+                        {% else %}
+                        <span id = 'ans-c'>{{question.answers|length}} answers</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+            </div>
+            <div style='padding: 1.5rem; padding-top: 0;'>
+                {% if question.answers|length < 1 %}
+                <div>No answers yet. Be the first to post one!</div>
+                <form action="/forum/{{loop.index0}}" method='POST'>
+                    <div style='display: flex; align-items: center;'>
+                        <input class = 'form-control' style='flex: 1; margin-right: 10px;' type="text" placeholder="Enter an answer" id="answer" name='answer'>
+                        <input class = 'btn' type="submit" >
+                    </div>
+                </form>
+            {% else %}
+                <div id="answer_content-{{loop.index0}}" class="collapse ans" style="font-size: 1rem;">
+                    {% for answer in question.answers %}    
+                        <div>{{ answer.content }}</div>
+                        <div style='font-size: 0.7rem;'>
+                            <div>By {{ answer.name }}</div>
+                        <div>{{ answer.submittedon.strftime("%Y-%m-%-d %-I:%M %p") }}</div>
+                        </div>
+                        <hr/>
+                    {% endfor %}
+                    <form action="/forum/{{loop.index0}}" method='POST'>
+                        <div style='display: flex; align-items: center;'>
+                            <input class = 'form-control' style='flex: 1; margin-right: 10px;' type="text" placeholder="Enter an answer" id="answer" name='answer'>
+                            <input class = 'btn' type="submit"  >
+                        </div>
+                    </form>
+                    <hr id='line'/>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    $("#question_header").click(() => {
+        $header = $(this);
+        $content = $("#answer_content");
+        $content.slideToggle(500, function () {
+        //execute this after slideToggle is done
+        //change text of header based on visibility of content div
+        $header.text(function () {
+            //change text based on condition
+            return $content.is(":visible") ? "Collapse" : "Expand";
+        });
+    });
+    });
+</script>
+
+<style>
+    .questbtn {
+        border: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        text-align: start;
+        color: black;
+    }
+    .ques{
+        font-weight:bold;
+        font-size: 1.4rem;
+    }
+    .btn{
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:hover .questbtn:hover{
+        box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.6);
+    }
+    .questbtn:hover {
+        text-decoration: underline;
+        font-weight: 500;
+    }
+
+    #question_query, .ans{
+        font-size: 1.3rem;
+    }
+
+    .ans {
+        text-align: start;
+    }
+
+    #ans-c{
+        cursor: pointer
+    }
+    #line{
+        border:1px dashed black;
+    }
+</style>
+{% endblock main %}
+

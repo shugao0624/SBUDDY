@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block main %}      
+<h2 id = 'title'>Study Sessions</h2>
+    <div class = 'card-columns' style = 'width: 1000px'>
+        {% for i in t %}
+            <div class = 'card bg-secondary'>
+                <div class = 'card-body text-center bg-light'>
+                    <h4 class = 'card-text'>{{ i.title }}</h4>
+                    <p class = 'btn btn-block'>Description: {{ i.content }}</p>
+                    <p class = 'btn btn-block'>Time: {{ i.time }}</p>
+                    <p class = 'btn btn-block'>Date: {{ i.date }}</p>
+                    <a href="{{ url_for('tasks.information') }}" class = "btn btn-dark stretched-link" >Join</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+<style>
+    #title{
+        text-align: center;
+    }
+</style>
+{% endblock main %}
